@@ -34,7 +34,7 @@ const InputCell = ({ type, value, setText, color, setColor }: CellProps) => {
       <input
         type={type}
         className="block w-full border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500"
-        value={value || 0}
+        value={value || (type === 'number' ? 0 : '')}
         required
         onChange={(e) => setText(e.target.value)}
       />
