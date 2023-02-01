@@ -75,6 +75,13 @@ const XY_CHART_OPTION = {
   ...COMMON_OPTIONS,
   scales: {
     x: {
+      title: {
+        display: true,
+        text: 'x Title',
+        font: {
+          size: 15,
+        },
+      },
       ticks: {
         font: {
           size: 15,
@@ -82,6 +89,13 @@ const XY_CHART_OPTION = {
       },
     },
     y: {
+      title: {
+        display: true,
+        text: 'y Title',
+        font: {
+          size: 15,
+        },
+      },
       ticks: {
         font: {
           size: 15,
@@ -173,6 +187,25 @@ const GraphModal = ({ closeModal, uploadGraph }: Props) => {
     );
   }, [row, col]);
 
+  const setXYChartTitle = (axis: 'x' | 'y', title: string) => {
+    const newOptions = { ...options };
+    const newXYOptions = { ...newOptions[chartType as 'bar' | 'line'] };
+    newXYOptions.scales[axis].title.text = title;
+    newOptions.bar = newOptions.line = newXYOptions;
+    setOptions(newOptions);
+  };
+
+  const getXYChartTitle = () => {
+    if (chartType !== 'bar' && chartType !== 'line') {
+      return { x: '', y: '' };
+    } else {
+      return {
+        x: options[chartType].scales.x.title.text,
+        y: options[chartType].scales.y.title.text,
+      };
+    }
+  };
+
   const getDatasets = () => {
     const datasets = [];
     if (chartType === 'pie') {
@@ -259,6 +292,8 @@ const GraphModal = ({ closeModal, uploadGraph }: Props) => {
           setLabels={setLabels}
           setItems={setItems}
           setColors={setColors}
+          setXYChartTitle={setXYChartTitle}
+          xyChartTitle={getXYChartTitle()}
         />
         <OptionSelector
           type={chartType}
