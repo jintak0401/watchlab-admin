@@ -15,6 +15,8 @@ interface Props {
   setItems: (items: string[]) => void;
   colors: string[];
   setColors: (colors: string[]) => void;
+  xyChartTitle: { x: string; y: string };
+  setXYChartTitle: (axis: 'x' | 'y', title: string) => void;
 }
 
 interface CellProps {
@@ -63,12 +65,46 @@ const InputCell = ({ type, value, setText, color, setColor }: CellProps) => {
   );
 };
 
+const XYTitleSetter = ({ type, xyChartTitle, setXYChartTitle }: Props) => {
+  if (type !== 'bar' && type !== 'line') {
+    return null;
+  }
+  const { x: xTitle, y: yTitle } = xyChartTitle;
+  return (
+    <>
+      {['x', 'y'].map((axis) => (
+        <div key={axis}>
+          <label
+            htmlFor={axis}
+            className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+          >
+            {axis} axis title
+          </label>
+          <input
+            type="text"
+            id={axis}
+            className="block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-blue-500"
+            value={axis === 'x' ? xTitle : yTitle}
+            onChange={(e) => {
+              setXYChartTitle(axis as 'x' | 'y', e.target.value);
+            }}
+            required
+          />
+        </div>
+      ))}
+    </>
+  );
+};
+
 const RowColSetter = ({ type, row, col, setRow, setCol }: Props) => {
   return (
-    <div className="flex gap-2">
+    <>
       {['row', 'col'].map((label) => (
         <div key={label}>
-          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+          <label
+            htmlFor={label}
+            className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+          >
             {label}
           </label>
           <input
@@ -91,7 +127,7 @@ const RowColSetter = ({ type, row, col, setRow, setCol }: Props) => {
           />
         </div>
       ))}
-    </div>
+    </>
   );
 };
 
@@ -180,7 +216,10 @@ const Table = ({
 const DataTable = (props: Props) => {
   return (
     <div className="space-y-2">
-      <RowColSetter {...props} />
+      <div className="flex gap-x-2">
+        <RowColSetter {...props} />
+        <XYTitleSetter {...props} />
+      </div>
       <Table {...props} />
     </div>
   );
