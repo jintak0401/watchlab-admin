@@ -35,11 +35,10 @@ export default function App() {
             editor.insertContent(img);
           };
         }}
-        initialValue="<p>This is the initial content of the editor.</p>"
         init={{
           setup: function (editor) {
             editor.ui.registry.addButton('custom_button', {
-              text: 'Add Button',
+              text: 'Add Graph',
               onAction: function () {
                 setModalOpened(true);
               },
