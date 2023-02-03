@@ -1,0 +1,5 @@
+<svg width="23" height="23" xmlns="http://www.w3.org/2000/svg"
+     xml:space="preserve" overflow="hidden"><defs><clipPath id="clip0"><rect x="384" y="104" width="23" height="23"/></clipPath></defs>
+    <g clip-path="url(#clip0)" transform="translate(-384 -104)"><path d="M378.25 104 412.75 104 412.75 127 378.25 127Z" fill="#FFFFFF" fill-rule="evenodd"/>
+        <path d="M402.65 115.5C402.65 119.449 399.448 122.65 395.499 122.65 391.55 122.65 388.349 119.449 388.349 115.5 388.349 111.551 391.55 108.35 395.499 108.35 399.448 108.35 402.65 111.551 402.65 115.5Z"
+              fill="#D30000" fill-rule="evenodd"/></g></svg>
