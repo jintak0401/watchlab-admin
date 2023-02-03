@@ -1,10 +1,11 @@
 interface Props {
   type: string;
-  options: any;
-  setOptions: (option: any) => void;
+  options: object;
+  setOptions: (option: unknown) => void;
 }
 
-const assignOption = (options: any, path: string[], value: any) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const assignOption = (options: any, path: string[], value: unknown) => {
   const originOptions = options;
   const isTitle = path.includes('title');
   for (let i = 0; i < path.length - 1; i++) {
@@ -19,6 +20,7 @@ const assignOption = (options: any, path: string[], value: any) => {
   return originOptions;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const chainOption = (options: any, path: string[]) => {
   for (let i = 0; i < path.length - 1; i++) {
     if (options[path[i]] === undefined) {
