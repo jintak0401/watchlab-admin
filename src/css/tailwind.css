@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::-webkit-scrollbar {
+    @apply bg-gray-300 dark:bg-gray-700 w-3;
+}
+
+::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    border: 1px solid transparent;
+    @apply bg-gray-500 dark:bg-gray-300 rounded-lg border-transparent border-2;
+}
+
+/* we define color scheme here */
+
+.dark {
+    --base-color: #171717;
+}
+
+.light {
+    --base-color: #ffffff;
+}
+
+html,
+body {
+    background-color: var(--base-color);
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
