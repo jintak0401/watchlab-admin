@@ -1,19 +1,26 @@
 interface Props {
   type: string;
-  options: any;
-  setOptions: (option: any) => void;
+  options: object;
+  setOptions: (option: unknown) => void;
 }
 
-const assignOption = (options: any, path: string[], value: any) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const assignOption = (options: any, path: string[], value: unknown) => {
   const originOptions = options;
+  const isTitle = path.includes('title');
   for (let i = 0; i < path.length - 1; i++) {
     options[path[i]] ??= {};
     options = options[path[i]];
+
+    if (isTitle && path[i] === 'title') {
+      options['display'] = !!(value !== 0 && options['text']);
+    }
   }
   options[path[path.length - 1]] = value;
   return originOptions;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const chainOption = (options: any, path: string[]) => {
   for (let i = 0; i < path.length - 1; i++) {
     if (options[path[i]] === undefined) {
@@ -47,6 +54,14 @@ const XY_CHART_OPTIONS = [
     label: 'Y Axis Font Size',
     path: ['scales', 'y', 'ticks', 'font', 'size'],
   },
+  {
+    label: 'X Axis Title Font Size',
+    path: ['scales', 'x', 'title', 'font', 'size'],
+  },
+  {
+    label: 'Y Axis Title Font Size',
+    path: ['scales', 'y', 'title', 'font', 'size'],
+  },
 ];
 
 const RADAR_OPTIONS = [
@@ -67,7 +82,7 @@ const OPTIONS_MAP = {
 const OptionSelector = ({ type, options, setOptions }: Props) => {
   const optionsList = OPTIONS_MAP[type as keyof typeof OPTIONS_MAP];
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       {optionsList.map((option) => (
         <div key={option.label}>
           <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
