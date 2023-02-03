@@ -5,4 +5,9 @@ interface DrawerItemType {
   root?: boolean;
 }
 
-export type { DrawerItemType };
+interface WordType {
+  word: string;
+  desc: string;
+}
+
+export type { DrawerItemType, WordType };
