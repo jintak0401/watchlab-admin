@@ -1,5 +1,11 @@
 import { TextInput } from 'flowbite-react';
-import { FormEvent, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import { FaSearch } from 'react-icons/fa';
 
 import type { GalleryCardType } from '@/lib/types';
@@ -83,52 +89,116 @@ const DUMMY: GalleryCardType[] = [
   },
 ];
 
+const editCard = (
+  card: Omit<GalleryCardType, 'image'> & { image: File | string }
+) => {
+  for (let i = 0; i < DUMMY.length; i++) {
+    if (DUMMY[i].id === card.id) {
+      DUMMY[i].title = card.title;
+      DUMMY[i].desc = card.desc;
+      DUMMY[i].image =
+        typeof card.image === 'string'
+          ? card.image
+          : URL.createObjectURL(card.image);
+      break;
+    }
+  }
+  return DUMMY;
+};
+const addCard = (
+  card: Omit<GalleryCardType, 'id' | 'image'> & { image: File | string }
+) => {
+  const newCard = {
+    ...card,
+    id: DUMMY.length + 1,
+    image:
+      typeof card.image === 'string'
+        ? card.image
+        : URL.createObjectURL(card.image),
+  };
+  DUMMY.unshift(newCard);
+  return DUMMY;
+};
+
 const GalleryPage = () => {
   const [searchInput, setSearchInput] = useState('');
   const [galleryList, setGalleryList] = useState(DUMMY);
-  const [editState, setEditState] = useState<
-    Pick<GalleryCardType, 'title' | 'desc' | 'id'>
-  >({ title: '', desc: '', id: 0 });
-  const [editImage, setEditImage] = useState<File | string | null>(null);
+  const [editedContent, setEditedContent] = useState<
+    Pick<GalleryCardType, 'title' | 'desc'> &
+      Pick<Partial<GalleryCardType>, 'id'>
+  >({ title: '', desc: '' });
+  const [editedImage, setEditedImage] = useState<File | string | null>(null);
+  const [newContent, setNewContent] = useState<
+    Pick<GalleryCardType, 'title' | 'desc'>
+  >({ title: '', desc: '' });
+  const [newImage, setNewImage] = useState<File | string | null>(null);
 
   useEffect(() => {
     const filtered = filterWords<GalleryCardType>(DUMMY, 'title', searchInput);
     setGalleryList(filtered);
   }, [searchInput]);
 
-  const onEdit = (type: keyof GalleryCardType) => (value: string | File) => {
-    if (type === 'image') {
-      setEditImage(value as File);
-    } else {
-      setEditState({
-        ...editState,
-        [type]: value,
-      });
-    }
-  };
-
   const onEditStart = (id: number) => {
     const target = DUMMY.find((item) => item.id === id);
     if (!target) {
       throw new Error('카드를 찾을 수 없습니다.');
     }
-    setEditImage(target.image);
-    setEditState({ title: target.title, desc: target.desc, id });
+    setEditedImage(target.image);
+    setEditedContent({ title: target.title, desc: target.desc, id });
   };
 
-  const onEditDone = (e: FormEvent<HTMLButtonElement>, cancel?: boolean) => {
-    e.preventDefault();
-    if (!cancel) {
-      for (let i = 0; i < DUMMY.length; i++) {
-        if (DUMMY[i].id === editState.id) {
-          DUMMY[i].title = editState.title;
-          DUMMY[i].desc = editState.desc;
-          break;
+  const onWriteImage =
+    (setImage: Dispatch<SetStateAction<File | string | null>>) =>
+    (val: File) => {
+      setImage(val);
+    };
+
+  const onWriteContents =
+    (
+      setContents: Dispatch<
+        SetStateAction<Pick<GalleryCardType, 'title' | 'desc'>> &
+          Pick<Partial<GalleryCardType>, 'id'>
+      >,
+      type: keyof GalleryCardType
+    ) =>
+    (value: string) => {
+      setContents((prev) => ({
+        ...prev,
+        [type]: value,
+      }));
+    };
+
+  const onWriteDone =
+    (type: 'edit' | 'add', image: File | string) =>
+    (e: FormEvent<HTMLButtonElement>, cancel?: boolean) => {
+      e.preventDefault();
+      if (!cancel) {
+        if (!image) {
+          alert('이미지를 업로드해주세요.');
+          return;
         }
+
+        const newCardList =
+          type === 'edit'
+            ? editCard({
+                ...editedContent,
+                id: editedContent.id as number,
+                image,
+              })
+            : addCard({
+                ...newContent,
+                image,
+              });
+        setGalleryList(newCardList);
       }
-    }
-    setEditState({ title: '', desc: '', id: 0 });
-  };
+      if (type === 'edit') {
+        setEditedImage(null);
+        setEditedContent({ title: '', desc: '' });
+      } else {
+        setNewImage(null);
+        setNewContent({ title: '', desc: '' });
+      }
+    };
 
   return (
     <div className="mx-auto flex w-full flex-col justify-center gap-4 xl:w-11/12">
@@ -144,8 +214,19 @@ const GalleryPage = () => {
         />
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+        {!searchInput && (
+          <GalleryInputCard
+            title={newContent.title}
+            desc={newContent.desc}
+            image={newImage}
+            onWriteImage={onWriteImage(setNewImage)}
+            onWriteTitle={onWriteContents(setNewContent, 'title')}
+            onWriteDesc={onWriteContents(setNewContent, 'desc')}
+            onWriteDone={onWriteDone('add', newImage as File)}
+          />
+        )}
         {galleryList.map((galleryCard) =>
-          editState.id !== galleryCard.id ? (
+          editedContent.id !== galleryCard.id ? (
             <GalleryCard
               key={galleryCard.id}
               onEditStart={onEditStart}
@@ -154,13 +235,13 @@ const GalleryPage = () => {
           ) : (
             <GalleryInputCard
               key={galleryCard.id}
-              title={editState.title}
-              desc={editState.desc}
-              image={editImage}
-              onEditImage={onEdit('image')}
-              onEditTitle={onEdit('title')}
-              onEditDesc={onEdit('desc')}
-              onEditDone={onEditDone}
+              title={editedContent.title}
+              desc={editedContent.desc}
+              image={editedImage}
+              onWriteImage={onWriteImage(setEditedImage)}
+              onWriteTitle={onWriteContents(setEditedContent, 'title')}
+              onWriteDesc={onWriteContents(setEditedContent, 'desc')}
+              onWriteDone={onWriteDone('edit', editedImage as File | string)}
             />
           )
         )}
