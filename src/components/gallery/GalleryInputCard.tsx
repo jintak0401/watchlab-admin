@@ -6,26 +6,29 @@ interface Props {
   title: string;
   desc: string;
   image: string | File | null;
-  onEditImage: (val: File) => void;
-  onEditTitle: (val: string) => void;
-  onEditDesc: (val: string) => void;
-  onEditDone: (e: FormEvent<HTMLButtonElement>, cancel?: boolean) => void;
+  onWriteImage: (val: File) => void;
+  onWriteTitle: (val: string) => void;
+  onWriteDesc: (val: string) => void;
+  onWriteDone: (e: FormEvent<HTMLButtonElement>, cancel?: boolean) => void;
 }
 
 const VALID_IMAGE_TYPES = ['image/png', 'image/jpeg'];
 const GalleryInputCard = ({
   title,
-  onEditTitle,
-  onEditDesc,
-  onEditImage,
-  onEditDone,
+  onWriteTitle,
+  onWriteDesc,
+  onWriteImage,
+  onWriteDone,
   image,
   desc,
 }: Props) => {
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !VALID_IMAGE_TYPES.includes(file.type)) return;
-    onEditImage(file);
+    if (!file || !VALID_IMAGE_TYPES.includes(file.type)) {
+      alert('png, jpeg 이미지를 업로드 해주세요.');
+      return;
+    }
+    onWriteImage(file);
   };
   return (
     <form className="bg-white pb-4 shadow-md">
@@ -53,7 +56,7 @@ const GalleryInputCard = ({
         <Label htmlFor="card_title" value="Title" />
         <TextInput
           id="card_title"
-          onChange={(e) => onEditTitle(e.target.value)}
+          onChange={(e) => onWriteTitle(e.target.value)}
           value={title}
           required
         />
@@ -63,16 +66,21 @@ const GalleryInputCard = ({
         <Textarea
           className="mb-2 px-2"
           id="card_desc"
-          onChange={(e) => onEditDesc(e.target.value)}
+          onChange={(e) => onWriteDesc(e.target.value)}
           value={desc}
           required
         />
       </div>
       <div className="mt-4 flex items-center justify-center gap-4">
-        <button className="btn" onClick={(e) => onEditDone(e, true)}>
+        <button className="btn" onClick={(e) => onWriteDone(e, true)}>
           Cancel
         </button>
-        <button type="submit" className="btn-primary btn" onClick={onEditDone}>
+        <button
+          type="submit"
+          className="btn-primary btn"
+          onClick={onWriteDone}
+          disabled={!title || !desc || !image}
+        >
           Done
         </button>
       </div>
