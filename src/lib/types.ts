@@ -10,4 +10,11 @@ interface WordType {
   desc: string;
 }
 
-export type { DrawerItemType, WordType };
+interface GalleryCardType {
+  id: number;
+  image: string;
+  title: string;
+  desc: string;
+}
+
+export type { DrawerItemType, GalleryCardType, WordType };

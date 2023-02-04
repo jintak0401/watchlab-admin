@@ -1,5 +1,3 @@
-import { WordType } from '@/lib/types';
-
 const genRandomColor = () => {
   const color = Math.floor(Math.random() * 16777215).toString(16);
   return `#${color}`;
@@ -56,14 +54,14 @@ const ch2pattern = (ch: string) => {
 // 퍼지 문자열 검색을 위한 정규식 생성
 const createFuzzyMatcher = (input: string) => {
   const pattern = input.split('').map(ch2pattern).join('.*?');
-  return new RegExp(pattern);
+  return new RegExp(pattern, 'i');
 };
 
-const filterWords = (words: WordType[], input: string) => {
-  if (!input) return words;
+const filterWords = <T>(list: T[], key: keyof T, input: string) => {
+  if (!input) return list;
 
   const matcher = createFuzzyMatcher(input);
-  return words.filter((word) => matcher.test(word.word));
+  return list.filter((item) => matcher.test(item[key] as string));
 };
 
 export { createFuzzyMatcher, filterWords, genRandomColor };
