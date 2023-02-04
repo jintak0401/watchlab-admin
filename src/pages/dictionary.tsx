@@ -58,7 +58,7 @@ const DictionaryPage = () => {
   const [wordList, setWordList] = useState<WordType[]>(DUMMY);
 
   useEffect(() => {
-    const filtered = filterWords(DUMMY, searchInput);
+    const filtered = filterWords<WordType>(DUMMY, 'word', searchInput);
     setWordList(filtered);
   }, [searchInput]);
 
@@ -74,7 +74,7 @@ const DictionaryPage = () => {
     setInputWord('');
     setInputDesc('');
 
-    const filtered = filterWords(DUMMY, searchInput);
+    const filtered = filterWords<WordType>(DUMMY, 'word', searchInput);
     setWordList(filtered);
   };
   return (
