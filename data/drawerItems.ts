@@ -5,6 +5,11 @@ const drawerItems = [
     root: true,
   },
   {
+    title: 'Gallery',
+    root: true,
+    href: '/gallery',
+  },
+  {
     title: 'Posts',
     root: true,
     items: [
@@ -15,20 +20,6 @@ const drawerItems = [
       {
         title: 'Write',
         href: '/posts/write',
-      },
-    ],
-  },
-  {
-    title: 'Gallery',
-    root: true,
-    items: [
-      {
-        title: 'List',
-        href: '/gallery',
-      },
-      {
-        title: 'Write',
-        href: '/gallery/write',
       },
     ],
   },
