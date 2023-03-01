@@ -1,7 +1,7 @@
 import axios, { AxiosPromise, HttpStatusCode } from 'axios';
 import { router } from 'next/client';
 
-const LOGIN_PAGE_URL = '/';
+import { LOGIN_PAGE_URL } from '@/lib/constant';
 
 export const redirectIfUnauthorized = async (request: () => AxiosPromise) => {
   try {
