@@ -13,4 +13,10 @@ module.exports = {
   images: {
     domains: ['lh3.googleusercontent.com'],
   },
+
+  i18n: {
+    locales: ['en', 'ko', 'jp', 'zh'],
+    defaultLocale: 'en',
+    localeDetection: false,
+  },
 };

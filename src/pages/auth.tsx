@@ -1,9 +1,9 @@
-import { useAtom } from 'jotai/index';
+import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import * as querystring from 'querystring';
 import { useEffect } from 'react';
 
-import { LOGIN_PAGE_URL, MAIN_PAGE_URL } from '@/lib/constant';
+import { LOCALE_KEY, LOGIN_PAGE_URL, MAIN_PAGE_URL } from '@/lib/constant';
 
 import { userInfoAtom } from '@/store/auth';
 
@@ -27,7 +27,10 @@ export default function AuthPage() {
         name: name as string,
         role: role as string,
       });
-      router.replace(MAIN_PAGE_URL);
+
+      router.replace(MAIN_PAGE_URL, undefined, {
+        locale: localStorage.getItem(LOCALE_KEY) || router.defaultLocale,
+      });
     }
   }, []);
 }
