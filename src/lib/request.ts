@@ -1,5 +1,5 @@
 import axios, { AxiosPromise, HttpStatusCode } from 'axios';
-import { router } from 'next/client';
+import Router from 'next/router';
 
 import { LOGIN_PAGE_URL } from '@/lib/constant';
 
@@ -11,7 +11,7 @@ export const redirectIfUnauthorized = async (request: () => AxiosPromise) => {
       axios.isAxiosError(e) &&
       e.response?.status === HttpStatusCode.Unauthorized
     ) {
-      router.replace(LOGIN_PAGE_URL).then(() => {
+      Router.replace(LOGIN_PAGE_URL).then(() => {
         alert('Login disabled. Please login again.');
       });
     } else {
