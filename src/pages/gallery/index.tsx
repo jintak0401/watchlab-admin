@@ -139,10 +139,6 @@ const GalleryPage = () => {
     setGalleryList(filtered);
   }, [searchInput]);
 
-  useEffect(() => {
-    console.log(newImage);
-  }, [newImage]);
-
   const onEditStart = (id: number) => {
     const target = DUMMY.find((item) => item.id === id);
     if (!target) {
