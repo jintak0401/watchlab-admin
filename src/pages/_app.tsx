@@ -14,11 +14,13 @@ import '@/css/tailwind.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
+import useStoreLocale from '@/hooks/useStoreLocale';
 
 import LayoutWrapper from '@/components/common/LayoutWrapper';
 
 export default function App({ Component, pageProps }: AppProps) {
   useIsLoggedIn();
+  useStoreLocale();
 
   const queryClient = useRef(
     new QueryClient({
