@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
+import _axios from '@/lib/axiosInstance';
 import type { GalleryCardType } from '@/lib/types';
 import { filterWords } from '@/lib/utils';
 
@@ -138,6 +139,10 @@ const GalleryPage = () => {
     setGalleryList(filtered);
   }, [searchInput]);
 
+  useEffect(() => {
+    console.log(newImage);
+  }, [newImage]);
+
   const onEditStart = (id: number) => {
     const target = DUMMY.find((item) => item.id === id);
     if (!target) {
@@ -190,6 +195,20 @@ const GalleryPage = () => {
                 image,
               });
         setGalleryList(newCardList);
+
+        const formData = new FormData();
+        formData.append('file', image);
+        formData.append('title', 'test');
+        formData.append('description', 'test description');
+        _axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/gallery?lang=en`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
       }
       if (type === 'edit') {
         setEditedImage(null);
