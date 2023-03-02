@@ -1,15 +1,17 @@
 import { Label, TextInput } from 'flowbite-react';
-import { FormEvent } from 'react';
+import { useState } from 'react';
+
+import { WordType } from '@/lib/types';
 
 interface Props {
-  word: string;
-  setWord: (word: string) => void;
-  desc: string;
-  setDesc: (description: string) => void;
-  addWord: (e: FormEvent<HTMLButtonElement>) => void;
+  addWord: (word: WordType) => Promise<void>;
 }
 
-const InputWord = ({ word, setWord, desc, setDesc, addWord }: Props) => {
+const InputWord = ({ addWord }: Props) => {
+  const [newWord, setNewWord] = useState<WordType>({
+    word: '',
+    description: '',
+  });
   return (
     <form className="flex w-full items-end gap-4">
       <div>
@@ -17,8 +19,10 @@ const InputWord = ({ word, setWord, desc, setDesc, addWord }: Props) => {
         <TextInput
           type="text"
           id="word"
-          onChange={(e) => setWord(e.target.value)}
-          value={word}
+          onChange={(e) => {
+            setNewWord({ ...newWord, word: e.target.value });
+          }}
+          value={newWord.word}
           required
         />
       </div>
@@ -27,16 +31,23 @@ const InputWord = ({ word, setWord, desc, setDesc, addWord }: Props) => {
         <TextInput
           type="text"
           id="description"
-          onChange={(e) => setDesc(e.target.value)}
-          value={desc}
+          onChange={(e) => {
+            setNewWord({ ...newWord, description: e.target.value });
+          }}
+          value={newWord.description}
           required
         />
       </div>
       <button
         type="submit"
         className="btn-primary btn"
-        onClick={addWord}
-        disabled={!word || !desc}
+        onClick={(e) => {
+          e.preventDefault();
+          addWord(newWord).then(() => {
+            setNewWord({ word: '', description: '' });
+          });
+        }}
+        disabled={!newWord.word || !newWord.description}
       >
         Add
       </button>
