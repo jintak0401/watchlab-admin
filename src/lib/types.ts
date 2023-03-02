@@ -6,8 +6,9 @@ interface DrawerItemType {
 }
 
 interface WordType {
+  id?: number;
   word: string;
-  desc: string;
+  description: string;
 }
 
 interface GalleryCardType {
