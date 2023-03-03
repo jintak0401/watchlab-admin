@@ -6,15 +6,35 @@ interface DrawerItemType {
 }
 
 interface WordType {
+  id?: number;
   word: string;
-  desc: string;
+  description: string;
 }
 
-interface GalleryCardType {
+interface GalleryBaseType {
+  title: string;
+  description: string;
+}
+
+interface GalleryCardType extends GalleryBaseType {
   id: number;
   image: string;
-  title: string;
-  desc: string;
+  file?: never;
 }
 
-export type { DrawerItemType, GalleryCardType, WordType };
+interface GalleryEditType extends GalleryBaseType {
+  id?: number;
+  file: File;
+  image?: never;
+}
+
+type GalleryType = GalleryCardType | GalleryEditType;
+
+export type {
+  DrawerItemType,
+  GalleryBaseType,
+  GalleryCardType,
+  GalleryEditType,
+  GalleryType,
+  WordType,
+};

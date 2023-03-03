@@ -64,4 +64,24 @@ const filterWords = <T>(list: T[], key: keyof T, input: string) => {
   return list.filter((item) => matcher.test(item[key] as string));
 };
 
-export { createFuzzyMatcher, filterWords, genRandomColor };
+const genMultiPartFormData = <T>(data: T) => {
+  const formData = new FormData();
+  for (const _key in data) {
+    const key: keyof T = _key;
+    if (data[key] instanceof Blob) {
+      formData.append(key, data[key] as Blob);
+    } else if (typeof data[key] === 'string') {
+      formData.append(key, data[key] as string);
+    } else if (typeof data[key] === 'number') {
+      formData.append(key, String(data[key]));
+    }
+  }
+  return formData;
+};
+
+export {
+  createFuzzyMatcher,
+  filterWords,
+  genMultiPartFormData,
+  genRandomColor,
+};

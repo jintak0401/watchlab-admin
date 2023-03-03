@@ -60,7 +60,7 @@ const PostsWritePage = () => {
           }}
           disabled={!thumbnail || !title || contentEmpty}
         >
-          {loading ? 'Loading' : '글 등록'}
+          {loading ? 'Loading' : 'Submit'}
         </button>
       </div>
       <Modal opened={modalOpened}>
