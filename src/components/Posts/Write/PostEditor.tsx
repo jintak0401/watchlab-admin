@@ -1,6 +1,9 @@
 import dynamic from 'next/dynamic';
+import * as process from 'process';
 import { MutableRefObject } from 'react';
 import { Editor as TinyMCEEditor } from 'tinymce';
+
+import _axios from '@/lib/axiosInstance';
 
 const Editor = dynamic(
   // @ts-ignore
@@ -29,7 +32,7 @@ const PostEditor = ({
       onInit={(evt, editor) => {
         editorRef.current = editor;
 
-        uploadGraph.current = (src: string) => {
+        uploadGraph.current = async (src: string) => {
           const img = `<img src="${src}" alt="graph">`;
           editor.insertContent(img);
         };
@@ -129,6 +132,28 @@ const PostEditor = ({
         contextmenu: 'link image table',
         content_style:
           'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
+        images_upload_handler: (blobInfo) =>
+          new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append('file', blobInfo.blob());
+            formData.append('path', 'post');
+            _axios
+              .post(
+                `${process.env.NEXT_PUBLIC_SERVER_URL}/s3/upload`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                  },
+                }
+              )
+              .then((response) => {
+                resolve(response.data);
+              })
+              .catch((error) => {
+                reject(error);
+              });
+          }),
       }}
     />
   );
