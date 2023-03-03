@@ -11,7 +11,10 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ['lh3.googleusercontent.com'],
+    domains: [
+      'lh3.googleusercontent.com',
+      'watchlab-s3.s3.us-east-1.amazonaws.com',
+    ],
   },
 
   i18n: {
