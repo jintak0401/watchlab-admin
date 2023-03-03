@@ -42,6 +42,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     'unused-imports/no-unused-imports': 'warn',
     'simple-import-sort/exports': 'warn',
     'simple-import-sort/imports': [
