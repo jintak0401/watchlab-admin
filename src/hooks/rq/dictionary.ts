@@ -1,16 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { DICTIONARY_KEY } from '@/lib/constant';
 import {
   addDictionary,
   deleteDictionary,
   getDictionaries,
   updateDictionary,
-} from '@/lib/request';
+} from '@/lib/request/dictionary';
 import { WordType } from '@/lib/types';
 
-const DIC_KEY = 'dictionary';
-
-const getQueryKey = (locale?: string) => [DIC_KEY, locale];
+const getQueryKey = (locale?: string) => [DICTIONARY_KEY, locale];
 
 export const useDicAddMutate = (locale?: string) => {
   const queryClient = useQueryClient();
@@ -47,7 +46,7 @@ export const useDicUpdateMutate = (locale?: string) => {
       if (word.id === undefined) {
         throw new Error('id is undefined');
       }
-      return updateDictionary(word, word.id);
+      return updateDictionary(word, word.id, locale);
     },
     {
       onMutate: async (word: WordType) => {
@@ -83,7 +82,7 @@ export const useDicDeleteMutate = (locale?: string) => {
   const queryClient = useQueryClient();
   const useQueryKey = getQueryKey(locale);
 
-  return useMutation((id: number) => deleteDictionary(id), {
+  return useMutation((id: number) => deleteDictionary(id, locale), {
     onMutate: async (id: number) => {
       await queryClient.cancelQueries(useQueryKey);
       const previousWords = queryClient.getQueryData<WordType[]>(useQueryKey);

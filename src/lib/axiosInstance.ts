@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from 'axios';
 
-import { refreshTokens } from '@/lib/request';
+import { issueTokens } from './request';
 
 const _axios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
@@ -32,7 +32,7 @@ _axios.interceptors.response.use(
       if (!storedRefreshToken) {
         return Promise.reject(error);
       }
-      const res = await refreshTokens(storedRefreshToken);
+      const res = await issueTokens(storedRefreshToken);
       const { accessToken, refreshToken } = res.data;
       if (accessToken && refreshToken) {
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;

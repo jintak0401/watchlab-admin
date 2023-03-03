@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
-import { getDictionaries } from '@/lib/request';
+import { DICTIONARY_KEY } from '@/lib/constant';
+import { getDictionaries } from '@/lib/request/dictionary';
 import { WordType } from '@/lib/types';
 import { filterWords } from '@/lib/utils';
 import {
@@ -22,7 +23,7 @@ import WordTable from '@/components/dictionary/WordTable';
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const queryClient = new QueryClient();
   const { locale } = context;
-  await queryClient.prefetchQuery(['dictionary', locale], () =>
+  await queryClient.prefetchQuery([DICTIONARY_KEY, locale], () =>
     getDictionaries(locale)
   );
 
