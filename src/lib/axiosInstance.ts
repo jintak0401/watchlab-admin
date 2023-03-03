@@ -24,7 +24,7 @@ _axios.interceptors.response.use(
   async function (error) {
     const originalRequest = error.config;
     if (
-      error.response.status === HttpStatusCode.Unauthorized &&
+      error.response?.status === HttpStatusCode.Unauthorized &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;

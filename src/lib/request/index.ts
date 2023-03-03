@@ -16,7 +16,6 @@ export const redirectIfUnauthorized = async (request: () => AxiosPromise) => {
       });
     } else {
       console.error('Unexpected Error: ', e);
-      window.alert('Unexpected Error: ' + e);
     }
     throw e;
   }
