@@ -24,6 +24,7 @@ const ThumbnailInput = ({ thumbnail, setThumbnail, className = '' }: Props) => {
             alt="thumbnail"
             width="1910"
             height="1000"
+            unoptimized
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center border-2 border-dashed bg-gray-300">
