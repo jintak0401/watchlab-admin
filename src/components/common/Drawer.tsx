@@ -18,7 +18,7 @@ import { drawerAtom } from '@/store/drawer';
 const ICONS: { [key: string]: IconType } = {
   Posts: BsFillFileRichtextFill,
   Gallery: BsImages,
-  User: BsFillPersonFill,
+  Writer: BsFillPersonFill,
   Dictionary: ImBook,
 };
 
