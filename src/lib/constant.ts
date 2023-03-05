@@ -14,5 +14,9 @@ export const VALID_IMAGE_TYPES = [
   'image/gif',
 ];
 
+export const WRITER_TYPE = ['main', 'sub'] as const;
+
 export const DICTIONARY_KEY = 'dictionary';
 export const GALLERY_KEY = 'gallery';
+
+export const WRITER_KEY = 'writer';

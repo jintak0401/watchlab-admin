@@ -47,6 +47,7 @@ const Profile = () => {
             alt={'user-image'}
             width="38"
             height="38"
+            unoptimized
           />
         </span>
       }
@@ -119,6 +120,7 @@ const Header = () => {
             alt="logo"
             width="200"
             height="200"
+            unoptimized
           />
           SIMRYUN
         </Link>
