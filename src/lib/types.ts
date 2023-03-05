@@ -1,3 +1,5 @@
+import { WRITER_TYPE } from '@/lib/constant';
+
 interface DrawerItemType {
   title: string;
   href?: string;
@@ -30,6 +32,18 @@ interface GalleryEditType extends GalleryBaseType {
 
 type GalleryType = GalleryCardType | GalleryEditType;
 
+interface WriterBaseType {
+  id?: number;
+  name: string;
+  image: string;
+  file?: File;
+  type: (typeof WRITER_TYPE)[number];
+}
+
+interface WriterType extends WriterBaseType {
+  id: number;
+}
+
 export type {
   DrawerItemType,
   GalleryBaseType,
@@ -37,4 +51,6 @@ export type {
   GalleryEditType,
   GalleryType,
   WordType,
+  WriterBaseType,
+  WriterType,
 };

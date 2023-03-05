@@ -36,6 +36,7 @@ const GalleryCard = ({
           onLoadingComplete={() => setLoading(false)}
           width={300}
           height={300}
+          unoptimized
         />
       ) : (
         <div
