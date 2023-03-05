@@ -96,17 +96,15 @@ const DictionaryPage = () => {
     <div className="mx-auto flex flex-col justify-center gap-4 xl:w-11/12">
       <InputWord addWord={addWord} />
       <hr className="mb-4 mt-6 border-gray-400" />
-      <div>
-        <TextInput
-          id="search_word"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          type="text"
-          icon={FaSearch}
-          placeholder="Search"
-          required
-        />
-      </div>
+      <TextInput
+        id="search_word"
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+        type="text"
+        icon={FaSearch}
+        placeholder="Search"
+        required
+      />
       {isLoading ? (
         <div className="my-10 text-center text-4xl text-gray-500">
           Loading...
