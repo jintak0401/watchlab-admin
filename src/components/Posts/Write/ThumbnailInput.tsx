@@ -1,12 +1,15 @@
+import clsx from 'clsx';
+import { FileInput } from 'flowbite-react';
 import NextImage from 'next/image';
 import { ChangeEvent } from 'react';
 
+import { VALID_IMAGE_TYPES } from '@/lib/constant';
+
 interface Props {
-  thumbnail: File | null;
-  setThumbnail: (thumbnail: File | null) => void;
+  thumbnail: string | File | null;
+  setThumbnail: (thumbnail: string | File | null) => void;
   className?: string;
 }
-const VALID_IMAGE_TYPES = ['image/png', 'image/jpeg'];
 const ThumbnailInput = ({ thumbnail, setThumbnail, className = '' }: Props) => {
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -16,28 +19,25 @@ const ThumbnailInput = ({ thumbnail, setThumbnail, className = '' }: Props) => {
 
   return (
     <>
-      <div className={`relative h-full w-full ${className}`}>
-        {thumbnail ? (
-          <NextImage
-            className="absolute top-0 left-0 z-0 aspect-[191/100] w-full object-cover"
-            src={URL.createObjectURL(thumbnail)}
-            alt="thumbnail"
-            width="1910"
-            height="1000"
-            unoptimized
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center border-2 border-dashed bg-gray-300">
-            <span>Drag and Drop a Image</span>
+      <div className={clsx('h-full w-full', className)}>
+        <FileInput onChange={handleFile} accept="image/*" />
+        {thumbnail && (
+          <div className="flex items-center justify-center">
+            <NextImage
+              className="max-w-[1000px] object-cover"
+              src={
+                typeof thumbnail === 'string'
+                  ? thumbnail
+                  : URL.createObjectURL(thumbnail)
+              }
+              alt="thumbnail"
+              width="1910"
+              height="1000"
+              unoptimized
+            />
           </div>
         )}
-        <input
-          onChange={handleFile}
-          className="absolute left-0 top-0 z-10 h-full w-full cursor-pointer opacity-0"
-          type="file"
-        />
       </div>
-      <span className="text-center">Image Ratio: 191/100</span>
     </>
   );
 };
