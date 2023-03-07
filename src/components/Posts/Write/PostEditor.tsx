@@ -1,9 +1,9 @@
 import dynamic from 'next/dynamic';
-import * as process from 'process';
 import { MutableRefObject } from 'react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
-import _axios from '@/lib/axiosInstance';
+import { uploadS3 } from '@/lib/request/post';
+import { GalleryCardType } from '@/lib/types';
 
 const Editor = dynamic(
   // @ts-ignore
@@ -16,25 +16,43 @@ const Editor = dynamic(
 interface Props {
   editorRef: MutableRefObject<TinyMCEEditor | null>;
   uploadGraph: MutableRefObject<((src: string) => void) | null>;
-  setContentEmpty: (isEmpty: boolean) => void;
-  setModalOpened: (opened: boolean) => void;
+  uploadGallery: MutableRefObject<((gallery: GalleryCardType) => void) | null>;
+  openModal: (mode: 'graph' | 'gallery') => void;
+  initText?: string;
+  setContentEmpty: (empty: boolean) => void;
 }
 
 const PostEditor = ({
   editorRef,
   uploadGraph,
+  openModal,
   setContentEmpty,
-  setModalOpened,
+  initText,
+  uploadGallery,
+  ...rest
 }: Props) => {
   return (
     <Editor
+      {...rest}
       tinymceScriptSrc={'/tinymce/tinymce.min.js'}
       onInit={(evt, editor) => {
         editorRef.current = editor;
+        if (initText) {
+          setTimeout(() => editor.setContent(initText), 0);
+        }
 
         uploadGraph.current = async (src: string) => {
           const img = `<img src="${src}" alt="graph">`;
           editor.insertContent(img);
+        };
+
+        uploadGallery.current = async ({
+          title,
+          description,
+          image,
+        }: GalleryCardType) => {
+          const table = `<table style="border-collapse: collapse; width: 0; height: 0; border-width: 1px;"><tbody><tr><td style="text-align: center; vertical-align: top; border-width: 1px; padding: 0; width: 0;"><img src="${image}" alt="${title}" width="400"></td></tr><tr><td style="text-align: center; vertical-align: top; border-width: 1px; padding: 0; width: 0;"><h2>${title}</h2><p>${description}</p></td></tr></tbody></table>`;
+          editor.insertContent(table);
         };
       }}
       onFocusOut={() => {
@@ -44,32 +62,45 @@ const PostEditor = ({
       }}
       init={{
         setup: function (editor) {
-          editor.ui.registry.addButton('custom_button', {
+          editor.ui.registry.addButton('add_graph', {
             text: 'Add Graph',
             onAction: function () {
-              setModalOpened(true);
+              openModal('graph');
+            },
+          });
+          editor.ui.registry.addButton('add_gallery', {
+            text: 'Add Gallery',
+            onAction: function () {
+              openModal('gallery');
             },
           });
         },
         plugins:
-          'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+          'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+
         editimage_cors_hosts: ['picsum.photos'],
         menubar: 'file edit view insert format tools table help',
         toolbar:
-          'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | image media template link anchor | ltr rtl | custom_button',
+          'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | table image media template link anchor | ltr rtl | add_graph  add_gallery',
         toolbar_sticky: true,
-        autosave_ask_before_unload: true,
+        /*
+        autosave_ask_before_unload: false,
         autosave_interval: '30s',
         autosave_prefix: '{path}{query}-{id}-',
         autosave_restore_when_empty: false,
         autosave_retention: '2m',
+*/
         image_advtab: true,
         link_list: [
           { title: 'My page 1', value: 'https://www.tiny.cloud' },
           { title: 'My page 2', value: 'http://www.moxiecode.com' },
         ],
         image_list: [
-          { title: 'My page 1', value: 'https://www.tiny.cloud' },
+          {
+            title: 'My page 1',
+            value:
+              'https://watchlab-s3.s3.us-east-1.amazonaws.com/gallery/b2be1b85-c882-49ab-a4e6-d20b9357d569.jpeg',
+          },
           { title: 'My page 2', value: 'http://www.moxiecode.com' },
         ],
         image_class_list: [
@@ -134,21 +165,9 @@ const PostEditor = ({
           'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
         images_upload_handler: (blobInfo) =>
           new Promise((resolve, reject) => {
-            const formData = new FormData();
-            formData.append('file', blobInfo.blob());
-            formData.append('path', 'post');
-            _axios
-              .post(
-                `${process.env.NEXT_PUBLIC_SERVER_URL}/s3/upload`,
-                formData,
-                {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                  },
-                }
-              )
+            uploadS3(blobInfo.blob(), 'post')
               .then((response) => {
-                resolve(response.data);
+                resolve(response);
               })
               .catch((error) => {
                 reject(error);

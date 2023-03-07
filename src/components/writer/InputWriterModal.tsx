@@ -52,7 +52,7 @@ const InputWriterModal = ({ mode, writer, open, onCancel, onDone }: Props) => {
             {mode === 'add' ? 'Add New Writer' : 'Update Writer'}
           </h3>
           <center className="space-y-4">
-            <FileInput onChange={inputFile} />
+            <FileInput onChange={inputFile} accept="image/*" />
             <Avatar file={newWriter.file} image={newWriter.image} />
           </center>
           <div>
