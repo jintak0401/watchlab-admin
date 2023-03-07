@@ -43,6 +43,28 @@ interface WriterBaseType {
 interface WriterType extends WriterBaseType {
   id: number;
 }
+interface PostItemType {
+  slug: string;
+  title: string;
+  thumbnail: string;
+  tags: string[];
+  view: number;
+  writer: {
+    name: string;
+    image: string;
+  };
+}
+
+interface PostEditType
+  extends Omit<PostItemType, 'thumbnail' | 'view' | 'writer'> {
+  writer: string;
+  thumbnail: string | File;
+  content?: string;
+}
+
+interface PostType extends PostItemType {
+  content: string;
+}
 
 export type {
   DrawerItemType,
@@ -50,6 +72,9 @@ export type {
   GalleryCardType,
   GalleryEditType,
   GalleryType,
+  PostEditType,
+  PostItemType,
+  PostType,
   WordType,
   WriterBaseType,
   WriterType,
