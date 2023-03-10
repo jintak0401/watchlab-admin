@@ -67,6 +67,10 @@ const PostsWritePage = ({ postProps }: Props) => {
     return regex.test(slug);
   };
 
+  const getPostContent = () => {
+    return editorRef.current?.getContent() ?? '';
+  };
+
   const uploadPost = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (thumbnail === null) {
@@ -76,7 +80,7 @@ const PostsWritePage = ({ postProps }: Props) => {
     }
     try {
       setLoading(true);
-      const content = editorRef.current?.getContent() ?? '';
+      const content = getPostContent();
       const data = {
         ...post,
         writer: selectedWriter.name,
@@ -159,7 +163,7 @@ const PostsWritePage = ({ postProps }: Props) => {
             placeHolder="enter tags"
           />
         </div>
-        <div className="h-[700px] w-full">
+        <div className="flex h-[1500px] w-full items-center justify-center">
           <PostEditor
             setContentEmpty={setContentEmpty}
             editorRef={editorRef}
