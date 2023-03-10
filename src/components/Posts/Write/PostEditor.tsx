@@ -51,7 +51,7 @@ const PostEditor = ({
           description,
           image,
         }: GalleryCardType) => {
-          const table = `<table style="border-collapse: collapse; width: 0; height: 0; border-width: 1px;"><tbody><tr><td style="text-align: center; vertical-align: top; border-width: 1px; padding: 0; width: 0;"><img src="${image}" alt="${title}" width="400"></td></tr><tr><td style="text-align: center; vertical-align: top; border-width: 1px; padding: 0; width: 0;"><h2>${title}</h2><p>${description}</p></td></tr></tbody></table>`;
+          const table = `<table style="border-collapse: collapse; border-width: 1px;"><tbody><tr><td style="text-align: center; vertical-align: top; border-width: 1px; padding: 0;"><img src="${image}" alt="${title}" width="400"></td></tr><tr><td style="text-align: center; vertical-align: top; border-width: 1px; padding: 0;"><h2>${title}</h2><p>${description}</p></td></tr></tbody></table>`;
           editor.insertContent(table);
         };
       }}
@@ -75,21 +75,16 @@ const PostEditor = ({
             },
           });
         },
+        content_css: '/editor.css',
         plugins:
-          'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+          'importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
 
         editimage_cors_hosts: ['picsum.photos'],
         menubar: 'file edit view insert format tools table help',
         toolbar:
-          'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | table image media template link anchor | ltr rtl | add_graph  add_gallery',
+          'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | lineheight | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | table image media template link anchor | ltr rtl | add_graph  add_gallery',
         toolbar_sticky: true,
-        /*
-        autosave_ask_before_unload: false,
-        autosave_interval: '30s',
-        autosave_prefix: '{path}{query}-{id}-',
-        autosave_restore_when_empty: false,
-        autosave_retention: '2m',
-*/
+        table_sizing_mode: 'fixed',
         image_advtab: true,
         link_list: [
           { title: 'My page 1', value: 'https://www.tiny.cloud' },
@@ -152,8 +147,11 @@ const PostEditor = ({
         ],
         template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
         template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+        table_default_styles: {
+          width: '1000px',
+        },
         height: '100%',
-        width: '100%',
+        width: '1520px',
         image_caption: true,
         media_caption: true,
         quickbars_selection_toolbar:
