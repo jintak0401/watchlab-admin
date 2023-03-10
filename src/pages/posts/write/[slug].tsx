@@ -1,13 +1,12 @@
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
-import { useRouter } from 'next/router';
 
 import { POST_KEY, TAG_KEY } from '@/lib/constant';
 import { getPost } from '@/lib/request/post';
 import { getPostTags } from '@/lib/request/tag';
-import { usePostQuery } from '@/hooks/rq/post';
-import { usePostTagQuery } from '@/hooks/rq/tag';
+import { PostType } from '@/lib/types';
 
+import LoadPostLayout from '@/layout/LoadPostLayout';
 import PostsWritePage from '@/pages/posts/write';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -33,26 +32,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 const PostEditPage = () => {
-  const router = useRouter();
-  const {
-    data: post,
-    isLoading: postLoading,
-    isError: postError,
-  } = usePostQuery(router.locale, router.query.slug as string);
-  const {
-    data: tags,
-    isLoading: tagsLoading,
-    isError: tagsError,
-  } = usePostTagQuery(router.locale, router.query.slug as string);
+  const Component = ({ post, tags }: { post: PostType; tags: string[] }) => {
+    const props = { ...post, tags };
+    return <PostsWritePage postProps={props} />;
+  };
 
-  if (postError || tagsError) {
-    return <h2 className="text-3xl">Error... Reload the page </h2>;
-  }
-  if (postLoading || tagsLoading) {
-    return <h2 className="text-3xl">Loading...</h2>;
-  }
-
-  return <PostsWritePage postProps={{ ...post, tags }} />;
+  return <LoadPostLayout Component={Component} />;
 };
 
 export default PostEditPage;
