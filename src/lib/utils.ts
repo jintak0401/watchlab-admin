@@ -90,9 +90,26 @@ const genMultiPartFormData = <T>(data: T) => {
   return formData;
 };
 
+const string2css = (str?: string) => {
+  if (!str) return {};
+  const cssJson = `{"${str
+    .replace(/; /g, '", "')
+    .replace(/: /g, '": "')
+    .replace(';', '')}"}`;
+
+  const obj = JSON.parse(cssJson);
+
+  const keyValues = Object.keys(obj).map((key) => {
+    const camelCased = key.replace(/-[a-z]/g, (g) => g[1].toUpperCase());
+    return { [camelCased]: obj[key] };
+  });
+  return Object.assign({}, ...keyValues);
+};
+
 export {
   createFuzzyMatcher,
   filterWords,
   genMultiPartFormData,
   genRandomColor,
+  string2css,
 };

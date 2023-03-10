@@ -10,6 +10,7 @@ import Head from 'next/head';
 import { useRef } from 'react';
 import { ToastContainer } from 'react-toastify';
 
+import '@/css/editor.scss';
 import '@/css/tailwind.css';
 import 'react-toastify/dist/ReactToastify.css';
 

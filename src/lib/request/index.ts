@@ -1,4 +1,4 @@
-import axios, { AxiosPromise, HttpStatusCode } from 'axios';
+import axios, { AxiosError, AxiosPromise, HttpStatusCode } from 'axios';
 import Router from 'next/router';
 
 import { LOGIN_PAGE_URL } from '@/lib/constant';
@@ -27,4 +27,8 @@ export const issueTokens = async (refreshToken: string | null) => {
       Authorization: `Bearer ${refreshToken}`,
     },
   });
+};
+
+export const isNotFound = (...errors: (undefined | AxiosError)[]) => {
+  return errors.some((e) => e?.response?.status === HttpStatusCode.NotFound);
 };
