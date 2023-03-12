@@ -253,6 +253,7 @@ const GraphModal = ({ closeModal, uploadGraph }: Props) => {
           <Chart
             key={chartName}
             className="my-auto"
+            // @ts-ignore
             ref={graphRef}
             data={getDatasets()}
             // @ts-ignore

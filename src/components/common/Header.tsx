@@ -47,6 +47,7 @@ const Profile = () => {
             alt={'user-image'}
             width="38"
             height="38"
+            unoptimized
           />
         </span>
       }
@@ -79,7 +80,7 @@ const LangDropDown = () => {
         return (
           <Dropdown.Item
             onClick={() =>
-              router.push(router.pathname, undefined, { locale: _locale })
+              router.push(router.asPath, undefined, { locale: _locale })
             }
             className="flex items-center gap-2"
             key={_locale}
@@ -119,6 +120,7 @@ const Header = () => {
             alt="logo"
             width="200"
             height="200"
+            unoptimized
           />
           SIMRYUN
         </Link>

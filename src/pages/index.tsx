@@ -13,6 +13,7 @@ export default function LoginPage() {
         alt="simryun"
         width="300"
         height="300"
+        unoptimized
       />
       <h1 className="text-4xl font-bold">SIMRYUN</h1>
       <Link

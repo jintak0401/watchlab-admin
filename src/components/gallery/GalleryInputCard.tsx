@@ -20,9 +20,9 @@ const GalleryImage = ({ image, file }: { image?: string; file?: File }) => {
     height: 300,
   };
   if (file) {
-    return <NextImage src={URL.createObjectURL(file)} {...rest} />;
+    return <NextImage src={URL.createObjectURL(file)} {...rest} unoptimized />;
   } else if (image) {
-    return <NextImage src={image} {...rest} />;
+    return <NextImage src={image} {...rest} unoptimized />;
   } else {
     return (
       <div className="flex h-full w-full items-center justify-center border-2 border-dashed bg-gray-300">

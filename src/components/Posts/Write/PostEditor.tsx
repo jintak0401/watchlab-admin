@@ -1,9 +1,9 @@
 import dynamic from 'next/dynamic';
-import * as process from 'process';
 import { MutableRefObject } from 'react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
-import _axios from '@/lib/axiosInstance';
+import { uploadS3 } from '@/lib/request/post';
+import { GalleryCardType } from '@/lib/types';
 
 const Editor = dynamic(
   // @ts-ignore
@@ -16,25 +16,43 @@ const Editor = dynamic(
 interface Props {
   editorRef: MutableRefObject<TinyMCEEditor | null>;
   uploadGraph: MutableRefObject<((src: string) => void) | null>;
-  setContentEmpty: (isEmpty: boolean) => void;
-  setModalOpened: (opened: boolean) => void;
+  uploadGallery: MutableRefObject<((gallery: GalleryCardType) => void) | null>;
+  openModal: (mode: 'graph' | 'gallery') => void;
+  initText?: string;
+  setContentEmpty: (empty: boolean) => void;
 }
 
 const PostEditor = ({
   editorRef,
   uploadGraph,
+  openModal,
   setContentEmpty,
-  setModalOpened,
+  initText,
+  uploadGallery,
+  ...rest
 }: Props) => {
   return (
     <Editor
+      {...rest}
       tinymceScriptSrc={'/tinymce/tinymce.min.js'}
       onInit={(evt, editor) => {
         editorRef.current = editor;
+        if (initText) {
+          setTimeout(() => editor.setContent(initText), 0);
+        }
 
         uploadGraph.current = async (src: string) => {
           const img = `<img src="${src}" alt="graph">`;
           editor.insertContent(img);
+        };
+
+        uploadGallery.current = async ({
+          title,
+          description,
+          image,
+        }: GalleryCardType) => {
+          const table = `<table style="border-collapse: collapse; border-width: 1px;"><tbody><tr><td style="text-align: center; vertical-align: top; border-width: 1px; padding: 0;"><img src="${image}" alt="${title}" width="400"></td></tr><tr><td style="text-align: center; vertical-align: top; border-width: 1px; padding: 0;"><h2>${title}</h2><p>${description}</p></td></tr></tbody></table>`;
+          editor.insertContent(table);
         };
       }}
       onFocusOut={() => {
@@ -44,32 +62,126 @@ const PostEditor = ({
       }}
       init={{
         setup: function (editor) {
-          editor.ui.registry.addButton('custom_button', {
+          editor.ui.registry.addButton('add_graph', {
             text: 'Add Graph',
             onAction: function () {
-              setModalOpened(true);
+              openModal('graph');
+            },
+          });
+          editor.ui.registry.addButton('add_gallery', {
+            text: 'Add Gallery',
+            onAction: function () {
+              openModal('gallery');
+            },
+          });
+
+          editor.ui.registry.addButton('add_template', {
+            text: 'Add Template',
+            onAction: function () {
+              editor.windowManager.open({
+                title: 'Add Template',
+                body: {
+                  type: 'panel',
+                  items: [
+                    {
+                      type: 'input',
+                      label: 'row',
+                      name: 'row',
+                    },
+                    {
+                      type: 'input',
+                      label: 'col',
+                      name: 'col',
+                    },
+                    {
+                      type: 'checkbox',
+                      label: 'only image',
+                      name: 'onlyImage',
+                    },
+                  ],
+                },
+                buttons: [
+                  {
+                    type: 'cancel',
+                    name: 'cancel',
+                    text: 'Cancel',
+                  },
+                  {
+                    type: 'submit',
+                    name: 'submit',
+                    text: 'Submit',
+                  },
+                ],
+                onSubmit: (api) => {
+                  const col = Number(api.getData().col) || 1;
+                  const row = Number(api.getData().row) || 1;
+                  const onlyImage = api.getData().onlyImage;
+                  const colWidth = 330;
+                  const imgSize = 300;
+                  const table = `<table style="width: ${colWidth * col}px;">
+    <colgroup>
+    ${Array.from({ length: col })
+      .map(() => `<col style="width: ${colWidth}px;">`)
+      .join('')}
+    </colgroup>
+    <tbody>
+    ${Array.from({ length: row })
+      .map(
+        () => `<tr>
+    ${Array.from({ length: col })
+      .map(
+        () => `<td style="text-align: center; vertical-align: middle;"><img
+            src="https://watchlab-s3.s3.us-east-1.amazonaws.com/post/feceef8f-4956-4ede-bd86-0544a0bf4709.png"
+            width="${imgSize}px" alt="gallery card image"></td>`
+      )
+      .join('')}
+    </tr>
+    <tr>
+    ${
+      onlyImage
+        ? ''
+        : Array.from({ length: col })
+            .map(
+              () => `<td style="vertical-align: top;"><h2 style="text-align: center;">Title</h2><p>This is description. This
+            is description. This is description. This is description. This is description. This is description. This is
+            description. This is description. This is description. This is description. This is description. This is
+            description. This is description.</p></td>`
+            )
+            .join('')
+    }
+    </tr>`
+      )
+      .join('')}
+    </tbody>
+</table>`;
+                  editor.setContent(table);
+                  api.close();
+                },
+              });
             },
           });
         },
+        content_css: '/editor.css',
         plugins:
-          'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+          'importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons preview',
+
         editimage_cors_hosts: ['picsum.photos'],
         menubar: 'file edit view insert format tools table help',
         toolbar:
-          'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | image media template link anchor | ltr rtl | custom_button',
+          'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | lineheight | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | table image media template link anchor | ltr rtl | add_graph  add_gallery add_template',
         toolbar_sticky: true,
-        autosave_ask_before_unload: true,
-        autosave_interval: '30s',
-        autosave_prefix: '{path}{query}-{id}-',
-        autosave_restore_when_empty: false,
-        autosave_retention: '2m',
+        table_sizing_mode: 'fixed',
         image_advtab: true,
         link_list: [
           { title: 'My page 1', value: 'https://www.tiny.cloud' },
           { title: 'My page 2', value: 'http://www.moxiecode.com' },
         ],
         image_list: [
-          { title: 'My page 1', value: 'https://www.tiny.cloud' },
+          {
+            title: 'My page 1',
+            value:
+              'https://watchlab-s3.s3.us-east-1.amazonaws.com/gallery/b2be1b85-c882-49ab-a4e6-d20b9357d569.jpeg',
+          },
           { title: 'My page 2', value: 'http://www.moxiecode.com' },
         ],
         image_class_list: [
@@ -100,29 +212,13 @@ const PostEditor = ({
             });
           }
         },
-        templates: [
-          {
-            title: 'New Table',
-            description: 'creates a new table',
-            content:
-              '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>',
-          },
-          {
-            title: 'Starting my story',
-            description: 'A cure for writers block',
-            content: 'Once upon a time...',
-          },
-          {
-            title: 'New list with dates',
-            description: 'New List with dates',
-            content:
-              '<div class="mceTmpl"><span class="cdate">cdate</span><br><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>',
-          },
-        ],
         template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
         template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+        table_default_styles: {
+          width: '1200px',
+        },
         height: '100%',
-        width: '100%',
+        width: '1520px',
         image_caption: true,
         media_caption: true,
         quickbars_selection_toolbar:
@@ -134,21 +230,9 @@ const PostEditor = ({
           'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
         images_upload_handler: (blobInfo) =>
           new Promise((resolve, reject) => {
-            const formData = new FormData();
-            formData.append('file', blobInfo.blob());
-            formData.append('path', 'post');
-            _axios
-              .post(
-                `${process.env.NEXT_PUBLIC_SERVER_URL}/s3/upload`,
-                formData,
-                {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                  },
-                }
-              )
+            uploadS3(blobInfo.blob(), 'post')
               .then((response) => {
-                resolve(response.data);
+                resolve(response);
               })
               .catch((error) => {
                 reject(error);

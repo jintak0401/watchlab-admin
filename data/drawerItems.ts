@@ -10,32 +10,14 @@ const drawerItems = [
     href: '/gallery',
   },
   {
-    title: 'Posts',
+    title: 'Writer',
     root: true,
-    items: [
-      {
-        title: 'List',
-        href: '/posts',
-      },
-      {
-        title: 'Write',
-        href: '/posts/write',
-      },
-    ],
+    href: '/writer',
   },
   {
-    title: 'User',
+    title: 'Posts',
     root: true,
-    items: [
-      {
-        title: 'List',
-        href: '/user',
-      },
-      {
-        title: 'Admin Profile',
-        href: '/user/admin',
-      },
-    ],
+    href: '/posts',
   },
 ];
 

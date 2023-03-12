@@ -1,0 +1,14 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-wrap: break-word;
+}
+
+body > p:not(:has(img)), body > h1:not(:has(img)), body > h2:not(:has(img)), body > h3:not(:has(img)), body > h4:not(:has(img)), body > h5:not(:has(img)), body > h6:not(:has(img)), body > ol:not(:has(img)), body > ul:not(:has(img)) {
+    width: 700px;
+}
+
+table p:not(:has(img)) {
+    padding: 0 10px;
+}
