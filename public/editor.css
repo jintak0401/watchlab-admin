@@ -4,6 +4,7 @@ body {
     align-items: center;
 }
 
-body > p,h1,h2,h3,h4,h5,h6,ol,ul:not(:has(img)) {
+body > p:not(:has(img)), h1:not(:has(img)), h2:not(:has(img)), h3:not(:has(img)), h4:not(:has(img)), h5:not(:has(img)), h6:not(:has(img)), ol:not(:has(img)), ul:not(:has(img)) {
     width: 700px;
+    overflow-wrap: break-word;
 }
