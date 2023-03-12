@@ -1,6 +1,6 @@
 {
   "name": "watchlab-admin",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -21,6 +21,8 @@
     "flowbite": "^1.6.3",
     "flowbite-react": "^0.3.8",
     "fs-extra": "^11.1.0",
+    "github-slugger": "^2.0.0",
+    "html-react-parser": "^3.0.12",
     "jotai": "^2.0.0",
     "next": "13.1.5",
     "react": "18.2.0",
@@ -28,8 +30,10 @@
     "react-color": "^2.19.3",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
+    "react-tag-input-component": "^2.0.2",
     "react-toastify": "^9.1.1",
-    "tinymce": "^6.3.1"
+    "tinymce": "^6.3.1",
+    "unreset-css": "^1.0.1"
   },
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
@@ -53,6 +57,7 @@
     "postcss": "^8.4.21",
     "prettier": "^2.8.3",
     "prettier-plugin-tailwindcss": "^0.2.2",
+    "sass": "^1.58.3",
     "tailwindcss": "^3.2.4",
     "typescript": "4.9.3"
   }

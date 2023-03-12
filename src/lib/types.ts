@@ -1,3 +1,5 @@
+import { WRITER_TYPE } from '@/lib/constant';
+
 interface DrawerItemType {
   title: string;
   href?: string;
@@ -30,11 +32,51 @@ interface GalleryEditType extends GalleryBaseType {
 
 type GalleryType = GalleryCardType | GalleryEditType;
 
+interface WriterBaseType {
+  id?: number;
+  name: string;
+  image: string;
+  file?: File;
+  type: (typeof WRITER_TYPE)[number];
+}
+
+interface WriterType extends WriterBaseType {
+  id: number;
+}
+interface PostItemType {
+  slug: string;
+  title: string;
+  thumbnail: string;
+  tags: string[];
+  view: number;
+  createdAt?: string;
+  writer: {
+    name: string;
+    image: string;
+  };
+}
+
+interface PostEditType
+  extends Omit<PostItemType, 'thumbnail' | 'view' | 'writer'> {
+  writer: string;
+  thumbnail: string | File;
+  content?: string;
+}
+
+interface PostType extends PostItemType {
+  content: string;
+}
+
 export type {
   DrawerItemType,
   GalleryBaseType,
   GalleryCardType,
   GalleryEditType,
   GalleryType,
+  PostEditType,
+  PostItemType,
+  PostType,
   WordType,
+  WriterBaseType,
+  WriterType,
 };

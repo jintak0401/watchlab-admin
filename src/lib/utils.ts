@@ -64,19 +64,46 @@ const filterWords = <T>(list: T[], key: keyof T, input: string) => {
   return list.filter((item) => matcher.test(item[key] as string));
 };
 
+const appendFormData = (formData: FormData, key: string, value: any) => {
+  if (value instanceof Blob) {
+    formData.append('file', value);
+  } else if (typeof value === 'string') {
+    formData.append(key, value);
+  } else if (typeof value === 'number') {
+    formData.append(key, String(value));
+  }
+};
+
 const genMultiPartFormData = <T>(data: T) => {
   const formData = new FormData();
   for (const _key in data) {
     const key: keyof T = _key;
-    if (data[key] instanceof Blob) {
-      formData.append(key, data[key] as Blob);
-    } else if (typeof data[key] === 'string') {
-      formData.append(key, data[key] as string);
-    } else if (typeof data[key] === 'number') {
-      formData.append(key, String(data[key]));
+    if (Array.isArray(data[key])) {
+      const arr = data[key] as any[];
+      arr.forEach((item) => {
+        appendFormData(formData, key, item);
+      });
+    } else {
+      appendFormData(formData, key, data[key]);
     }
   }
   return formData;
+};
+
+const string2css = (str?: string) => {
+  if (!str) return {};
+  const cssJson = `{"${str
+    .replace(/; /g, '", "')
+    .replace(/: /g, '": "')
+    .replace(';', '')}"}`;
+
+  const obj = JSON.parse(cssJson);
+
+  const keyValues = Object.keys(obj).map((key) => {
+    const camelCased = key.replace(/-[a-z]/g, (g) => g[1].toUpperCase());
+    return { [camelCased]: obj[key] };
+  });
+  return Object.assign({}, ...keyValues);
 };
 
 export {
@@ -84,4 +111,5 @@ export {
   filterWords,
   genMultiPartFormData,
   genRandomColor,
+  string2css,
 };
