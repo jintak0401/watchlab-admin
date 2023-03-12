@@ -49,6 +49,7 @@ interface PostItemType {
   thumbnail: string;
   tags: string[];
   view: number;
+  createdAt?: string;
   writer: {
     name: string;
     image: string;
