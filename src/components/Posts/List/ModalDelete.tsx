@@ -10,9 +10,15 @@ interface Props {
 
 const ModalDelete = ({ opened, onClose, onConfirm }: Props) => {
   const [loading, setLoading] = useState(false);
-  const confirm = () => {
+  const confirm = async () => {
     setLoading(true);
-    onConfirm();
+    try {
+      await onConfirm();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Modal show={opened} size="md" popup={true} onClose={onClose}>
