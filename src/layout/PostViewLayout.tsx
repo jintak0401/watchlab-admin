@@ -47,7 +47,7 @@ const PostViewLayout = ({ title, tags, thumbnail, content }: PreviewProps) => {
           unoptimized
         />
       )}
-      {tags?.length && (
+      {tags?.length ? (
         <div className="flex gap-2">
           {tags.map((tag) => (
             <span key={tag} className="rounded-md bg-primary-200 px-3 py-1">
@@ -55,7 +55,7 @@ const PostViewLayout = ({ title, tags, thumbnail, content }: PreviewProps) => {
             </span>
           ))}
         </div>
-      )}
+      ) : null}
       {title && <h1 className="my-3 text-5xl font-bold">{title}</h1>}
       {content && (
         <div
