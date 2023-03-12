@@ -74,15 +74,101 @@ const PostEditor = ({
               openModal('gallery');
             },
           });
+
+          editor.ui.registry.addButton('add_template', {
+            text: 'Add Template',
+            onAction: function () {
+              editor.windowManager.open({
+                title: 'Add Template',
+                body: {
+                  type: 'panel',
+                  items: [
+                    {
+                      type: 'input',
+                      label: 'row',
+                      name: 'row',
+                    },
+                    {
+                      type: 'input',
+                      label: 'col',
+                      name: 'col',
+                    },
+                    {
+                      type: 'checkbox',
+                      label: 'only image',
+                      name: 'onlyImage',
+                    },
+                  ],
+                },
+                buttons: [
+                  {
+                    type: 'cancel',
+                    name: 'cancel',
+                    text: 'Cancel',
+                  },
+                  {
+                    type: 'submit',
+                    name: 'submit',
+                    text: 'Submit',
+                  },
+                ],
+                onSubmit: (api) => {
+                  const col = Number(api.getData().col) || 1;
+                  const row = Number(api.getData().row) || 1;
+                  const onlyImage = api.getData().onlyImage;
+                  const colWidth = 330;
+                  const imgSize = 300;
+                  const table = `<table style="width: ${colWidth * col}px;">
+    <colgroup>
+    ${Array.from({ length: col })
+      .map(() => `<col style="width: ${colWidth}px;">`)
+      .join('')}
+    </colgroup>
+    <tbody>
+    ${Array.from({ length: row })
+      .map(
+        () => `<tr>
+    ${Array.from({ length: col })
+      .map(
+        () => `<td style="text-align: center; vertical-align: middle;"><img
+            src="https://watchlab-s3.s3.us-east-1.amazonaws.com/post/feceef8f-4956-4ede-bd86-0544a0bf4709.png"
+            width="${imgSize}px" alt="gallery card image"></td>`
+      )
+      .join('')}
+    </tr>
+    <tr>
+    ${
+      onlyImage
+        ? ''
+        : Array.from({ length: col })
+            .map(
+              () => `<td style="vertical-align: top;"><h2 style="text-align: center;">Title</h2><p>This is description. This
+            is description. This is description. This is description. This is description. This is description. This is
+            description. This is description. This is description. This is description. This is description. This is
+            description. This is description.</p></td>`
+            )
+            .join('')
+    }
+    </tr>`
+      )
+      .join('')}
+    </tbody>
+</table>`;
+                  editor.setContent(table);
+                  api.close();
+                },
+              });
+            },
+          });
         },
         content_css: '/editor.css',
         plugins:
-          'importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+          'importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons preview',
 
         editimage_cors_hosts: ['picsum.photos'],
         menubar: 'file edit view insert format tools table help',
         toolbar:
-          'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | lineheight | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | table image media template link anchor | ltr rtl | add_graph  add_gallery',
+          'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | lineheight | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | table image media template link anchor | ltr rtl | add_graph  add_gallery add_template',
         toolbar_sticky: true,
         table_sizing_mode: 'fixed',
         image_advtab: true,
@@ -126,29 +212,10 @@ const PostEditor = ({
             });
           }
         },
-        templates: [
-          {
-            title: 'New Table',
-            description: 'creates a new table',
-            content:
-              '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>',
-          },
-          {
-            title: 'Starting my story',
-            description: 'A cure for writers block',
-            content: 'Once upon a time...',
-          },
-          {
-            title: 'New list with dates',
-            description: 'New List with dates',
-            content:
-              '<div class="mceTmpl"><span class="cdate">cdate</span><br><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>',
-          },
-        ],
         template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
         template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
         table_default_styles: {
-          width: '1000px',
+          width: '1200px',
         },
         height: '100%',
         width: '1520px',
