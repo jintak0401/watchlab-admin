@@ -6,8 +6,16 @@
   flex-direction: column;
   align-items: center;
 
-  & > p:not(:has(img)), h1:not(:has(img)), h2:not(:has(img)), h3:not(:has(img)), h4:not(:has(img)), h5:not(:has(img)), h6:not(:has(img)), ol:not(:has(img)), ul:not(:has(img)) {
+  & > p:not(:has(img)), & > h1:not(:has(img)), & > h2:not(:has(img)), & > h3:not(:has(img)), & > h4:not(:has(img)), & > h5:not(:has(img)), & > h6:not(:has(img)), & > ol:not(:has(img)), & > ul:not(:has(img)) {
     width: 700px;
     overflow-wrap: break-word;
+  }
+
+  table p:not(:has(img)) {
+    padding: 0 10px;
+  }
+
+  img {
+    display: inline;
   }
 }
