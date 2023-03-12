@@ -1,7 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { POST_KEY, TAG_KEY } from '@/lib/constant';
-import { addPost, getPost, getPostList, updatePost } from '@/lib/request/post';
+import {
+  addPost,
+  deletePost,
+  getPost,
+  getPostList,
+  updatePost,
+} from '@/lib/request/post';
 import { PostEditType, PostItemType, PostType } from '@/lib/types';
 
 const getPostQueryKey = (locale?: string, slug?: string) =>
@@ -110,3 +116,29 @@ export const usePostListQuery = (locale?: string) =>
   useQuery<PostItemType[]>(getPostQueryKey(locale), async () => {
     return await getPostList(locale);
   });
+
+export const usePostDeleteMutate = (locale?: string) => {
+  const queryClient = useQueryClient();
+  const useQueryKey = getPostQueryKey(locale);
+
+  return useMutation((slug: string) => deletePost(locale, slug), {
+    onMutate: async (slug: string) => {
+      await queryClient.cancelQueries(useQueryKey);
+      const previousPosts =
+        queryClient.getQueryData<PostItemType[]>(useQueryKey);
+      queryClient.setQueryData<PostItemType[]>(useQueryKey, (old) => {
+        return old?.filter((post) => post.slug !== slug) ?? [];
+      });
+      return { previousPosts };
+    },
+    onError: (err, slug, context) => {
+      queryClient.setQueryData<PostItemType[]>(
+        useQueryKey,
+        context?.previousPosts ?? []
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(useQueryKey);
+    },
+  });
+};
