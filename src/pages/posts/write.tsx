@@ -163,7 +163,7 @@ const PostsWritePage = ({ postProps }: Props) => {
             placeHolder="enter tags"
           />
         </div>
-        <div className="flex h-[1500px] w-full items-center justify-center">
+        <div className="flex h-[1000px] w-full items-center justify-center">
           <PostEditor
             setContentEmpty={setContentEmpty}
             editorRef={editorRef}
