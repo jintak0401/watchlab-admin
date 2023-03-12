@@ -30,7 +30,7 @@ const PostItem = ({ post, onDelete }: Props) => {
           </h2>
         </Link>
         <div className="flex gap-3">
-          {tags.map((tag) => (
+          {tags?.map((tag) => (
             <span key={`${slug}_${tag}`} className="text-primary-500">
               {tag}
             </span>
