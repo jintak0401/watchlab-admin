@@ -21,3 +21,4 @@ export const GALLERY_KEY = 'gallery';
 export const WRITER_KEY = 'writer';
 export const POST_KEY = 'post';
 export const TAG_KEY = 'tag';
+export const POST_TAG_KEY = 'post_tag';

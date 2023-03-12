@@ -66,3 +66,10 @@ export const getPostCount = async (locale?: string) => {
   );
   return res?.data;
 };
+
+export const deletePost = async (locale: string | undefined, slug: string) => {
+  const res = await redirectIfUnauthorized(() =>
+    _axios.delete(getPostReqUrl(locale, slug))
+  );
+  return res?.data;
+};
